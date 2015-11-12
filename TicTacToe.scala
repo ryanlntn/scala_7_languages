@@ -3,37 +3,34 @@ object TicTacToe {
   // val board = Array.fill(3,3)(' ')
   val board = Array(
     Array('X', ' ', 'X'),
-    Array(' ', 'X', ' '),
-    Array('X', ' ', ' ')
+    Array(' ', ' ', ' '),
+    Array('X', ' ', 'X')
   )
+  val boardRange = (0 until board.size)
 
   def evaluateBoard {
     // Check Rows
-    board.foreach { row =>
-      players.foreach { player =>
-        if (row.forall(_ == player)) return winner(player)
-      }
-    }
+    board.foreach(row => if (isWinner(row)) return)
 
     // Check Columns
-    (0 until board.size).foreach { col =>
-      players.foreach { player =>
-        if (board.map(row => row(col)).forall(_ == player)) return winner(player)
-      }
-    }
+    boardRange.foreach(col => if (isWinner(board.map(row => row(col)))) return)
 
     // Check Diagonals
-    players.foreach { player =>
-      if ((0 until board.size).map(i => board(i)(i)).forall(_ == player))              return winner(player)
-      if ((0 until board.size).map(i => board(i)(board.size-1-i)).forall(_ == player)) return winner(player)
-    }
+    if (isWinner(boardRange.map(i => board(i)(i)))) return
+    if (isWinner(boardRange.map(i => board(i)(board.size-1-i)))) return
 
     // If all else fails it's a draw
     println("It's a draw.")
   }
 
-  def winner(name: Char) {
-    println(s"${name} Wins!")
+  def isWinner(collection: IndexedSeq[Char]): Boolean = {
+    players.foreach { player =>
+      if (collection.forall(_ == player)) {
+        println(s"${player} Wins!")
+        return true
+      }
+    }
+    false
   }
 
   def main(args: Array[String]) {
